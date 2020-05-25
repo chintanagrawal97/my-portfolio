@@ -1,0 +1,39 @@
+.header {
+    padding: 1rem 0 3rem;
+}
+
+.title {
+    color: #000000;
+    font-size: 3rem;
+    text-decoration: none;
+}
+
+.nav-list {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+}
+
+.nav-item {
+    color: #999999;
+    font-size: 1.9rem;
+    margin-right: 1.3rem;
+    // text-decoration: none;
+    color: var(--text-light);
+    position: relative;
+    margin: 0.5em;
+    left: 23%;
+    width: 100%;
+    transform-origin: center;
+    -webkit-transition: transform 0.2s ease-in-out;
+    -o-transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
+}
+
+.nav-item:hover {
+    color: #666666;
+}
+
+.active-nav-item {
+    color: #333333;
+}

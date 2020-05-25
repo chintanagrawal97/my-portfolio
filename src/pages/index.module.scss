@@ -1,0 +1,34 @@
+.homeContainer {
+    min-width: 768px;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 50px;
+    margin-right: auto;
+    margin-left: auto;
+    box-sizing: border-box;
+    display: block;
+    font-family: Poppins,sans-serif;
+    text-align: center;
+}
+.homeContainerHeading {
+    font-size: 125px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.homeContainerContent {
+    font-size: 40px;
+    font-weight: 400;
+}
+
+.skillsImage {
+    height: 100px;
+    width: 100px; 
+}
+
+.contactContainerContent{
+    padding-top: 50px;
+    font-size: 25px;
+    font-weight: 400;
+}
