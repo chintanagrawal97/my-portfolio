@@ -37,6 +37,19 @@ module.exports = {
         name: `markdown`,
         path: `${__dirname}/src/markdown`,
       }
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `posts`,
+        path: `${__dirname}/src/posts`,
+      }
+    },
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        extensions: [`.mdx`],
+      },
     }
   ]
 }
