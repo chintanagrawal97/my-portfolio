@@ -1,59 +1,134 @@
 ---
 md_id : blog
-title: My Fourth Post... So Long For Now
+title: Athena Common Errors
 slug: my-fourth-post
 date: 2020-03-24
 featureImage: island.jpg
 excerpt: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit nisl, leo et. Vitae hendrerit vivamus cum ullamcorper hendrerit et arcu, elit ornare.
 ---
 
-# Heading 1
-
-## Heading 2
-
-### Heading 3
-
-#### Heading 4
-
-##### Heading 5
-
-###### Heading 6
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. `Consectetur pulvinar consequat hendrerit nulla et tempor neque`, risus. Mauris nulla at imperdiet duis sit euismod quis augue. Quam convallis porta pharetra consequat diam laoreet enim.
-
 ---
+### Table of Contents
+You're sections headers will be used to reference location of destination.
 
-Lorem ipsum dolor sit amet, ~~consectetur adipiscing elit~~. Ut tortor tincidunt porttitor suspendisse dolor aliquam, sodales. Consequat, amet, et urna, habitant nibh tincidunt viverra sed sed. **Amet tortor euismod ut in nulla viverra in**. Proin gravida.
+- [HIVE CURSOR ERROR](#HIVE_CURSOR_ERROR) 
+- [Parquet Incomaptabile DataType](#parquet-incompatabile-datatype)
+- [Glacier Query](#glacier-query)
+- [HIVE Cannot Open Split](#hive-cannnot-open-split)
 
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit nisl, leo et. Vitae hendrerit vivamus cum ullamcorper hendrerit et arcu, elit ornare.
 
-[Lorem ipsum dolor sit amet](https://www.google.com/), consectetur adipiscing elit. Integer morbi purus in morbi nisl lobortis congue malesuada. Id turpis posuere nam habitasse at mus viverra. Est at pretium facilisis cursus leo. Et massa tincidunt velit donec. Erat elementum nibh.
 
-1. Showcase and embed your work with
-2. Showcase and embed your work with
-3. Showcase and embed your work with
+## HIVE_CURSOR_ERROR: Unexpected end of input stream
 
-- Showcase and embed your work with
-- Showcase and embed your work with
-- Showcase and embed your work with
+When any of the data source file is corrupted during query execution below error is reported. This error indicates that Presto engine is not able to read the specific corrupted files correctly.
 
-![Island Photo](island.jpg)
+Check the s3 source path for the files which are added to the s3 path since query started reporting failure. One of the file can be corrupted. Rerun the query after removing corrupted file. 
+Suppose there are 100 file in a bucket s3://test-bucket/ namely file1, file2 …… file100 and file76 has the issue. You can divide the data set in 2 halves like below and then query on both the halves separately.
 
-```html
-<div>Hello World</div>
+Half 1: file1, file2, …… ,file50
+Half 2: file51, file52, …….. ,file100
+
+Half 1 will succeed while Half 2 will fail as it contains file76 which is causing the issue. Again we can divide the Half 2 in 2 parts and follow the pattern till we reach the actual file causing the issue.
+
+Half 2A: file51, file52, ….. ,file75 <--- Succeeds
+Half 2B: file76, file77, ….. ,file100 <--- Fails
+
+Dividing again:
+
+Half 2BA: file76, file77, ….. ,file88 <--- Fails
+Half 2BB: file89, file90, ….. ,file100 <--- Succeeds
+
+Dividing again:
+
+Half 2BAA: file76, file77, ….., file82 <--- Fails
+Half 2BAB: file83, file84, ….., file88 <-- Succeeds
+
+******************* 
+(So on.. untill we get end file causing the issue)
+
+Also, you can consider to write a script that will list and then read the objects in your bucket one by one and return the list of corrupted filesconsider below python code snippet as an example.
+
+```python
+import os
+import gzip
+for file in os.listdir(r"C:\Directory_name"):
+    if file.endswith(".gz"):
+        print file
+        os.chdir(r"C:\Directory_name")
+        f = gzip.open(file, 'rb')
+        file_content = f.read()
+        f.close()
+``` 
+
+
+Athena throws the "HIVE_CURSOR_ERROR" error for files having 0 bytes in size (basically corrupt) or a file with corrupt data.Athena query would stop executing if it detects a problem with the source data. 
+ 
+AWS s3api and delete-object CLI commands on best effort basis. You can consider the below example for listing and deleting objects having 0B size :
+
+```{r, engine='bash', count_lines}
+bucket_name='rcs-maap-cdr-prod'
+prefix_name = ‘kt'
 ```
 
-```css
-.imperio {
-  color: blue;
-}
+```{r, engine='bash', count_lines}
+aws s3api list-objects —bucket $bucket_name  --prefix $prefix_name --query 'Contents[?Size==`0`][Key]' --output text | xargs -I {} aws s3api delete-object --bucket $bucket_name --key {}
 ```
 
-```js
-const harry = spell(`lumos`)
-```
+The above mentioned commands list and delete all objects having size=0 bytes under the bucket 'rcs-maap-cdr-prod' and folder 'kt'. If you wish to delete all objects having size 0 under a particular bucket, you can run the following command :
 
-| Syntax    | Description | Type         | Style  | Another Column      |
-| --------- | ----------- | ------------ | ------ | ------------------- |
-| Header    | Title       | HTML Element | Simple | More Boring Info    |
-| Paragraph | Text        | HTML Element | Simple | And Some More Stuff |
+```{r, engine='bash', count_lines}
+aws s3api list-objects --bucket $bucket_name --query 'Contents[?Size==`0`][Key]' --output text | xargs -I {} aws s3api delete-object --bucket $bucket_name --key {}
+```
+----------------------------------------
+
+## Parquet Incompatabile Datatype
+Datatype in Parquet is Incompatible with type athena datatype
+Field X's datatype in parquet is incompatible with type athena datatype defined in table schema
+
+Example 1 : HIVE_BAD_DATA: Field col1's type INT64 in parquet is incompatible with type string defined in table schema
+
+This error suggest that column "col1" is defined as "INT64" in the parquet metadata definition and when the same "col1" is defined as "string" data type in the table definition and they are incompatible. In this case to read the data successfully "col1" 's data type need to be changed to "BIGINT" [1] (BIGINT.A 64-bit signed INTEGER in two’s complement format, with a minimum value of -2^63 and a maximum value of 2^63-1.)  in the table definition which is compatible with the "INT64"  date type defined in the parquet metadata definition. 
+
+ 
+
+Example 2: HIVE_BAD_DATA: Field year's type BINARY in parquet is incompatible with type int defined in table schema
+
+This error suggest that column "year" is defined as "BINARY" in the parquet metadata definition and when the same "year" is defined as "int" data type in the table definition and they are incompatible. In this case to read the data successfully "year" 's data type need to be changed to "BINARY" (BINARY (for data in Parquet)) or "STRING" [1] in the table definition which is compatible with the "BINARY"  date type defined in the parquet metadata definition. strings are stored as byte arrays (binary) with a UTF8 annotation
+
+ 
+
+Reference : 
+
+[1] https://docs.aws.amazon.com/athena/latest/ug/data-types.html
+
+[2]  https://github.com/apache/parquet-format/blob/master/LogicalTypes.md
+
+----------------------------------------
+## Glacier Query
+
+Athena does not support querying the data in the GLACIER storage class. It ignores objects transitioned to the GLACIER storage class based on an Amazon S3 lifecycle policy.
+
+ 
+
+Resolution : To make Athena query work with the GLACIER objects, please transition the object back to the Amazon S3 Standard storage class. You can do so by running a copy operation either by overwriting the existing object or copying the object into another location [2].
+
+----------------------------------------
+
+## HIVE_CANNOT_OPEN_SPLIT 
+Slow Down (Service: Amazon S3; Status Code: 503; Error Code: 503 Slow Down
+
+
+When you run an Athena query, it first make a S3 List call for table/partition location and then issue a GetObject call to read each file. So in case there are large number of files under one prefix then request to S3 may exceed 5500 GET/HEAD requests per second per prefix, resulting slow Down error (503). Please refer [1] for S3 limits. 
+
+Possible approach to handle the error :  
+1. Implement the retry logic to rerun the Athena query if customer use case allows [2].
+2. Use more number of S3 Prefix to distribute the request evenly across prefixes [3]. If possible partition the data and add filter to the query to reduce the scanned data. Point 1 in [3]. 
+3. If there are large number of small s3 objects whose size is less than 128 MB, consider to merge the small objects into larger objects using s3distcp utility[4]  or any other method. point 4 "optimize file size" in [3]. 
+
+If error is persistent, please reach out to AWS premium support. 
+
+Reference :
+https://aws.amazon.com/premiumsupport/knowledge-center/http-5xx-errors-s3/
+https://docs.aws.amazon.com/general/latest/gr/api-retries.html
+https://aws.amazon.com/blogs/big-data/top-10-performance-tuning-tips-for-amazon-athena/
+https://docs.aws.amazon.com/emr/latest/ReleaseGuide/UsingEMR_s3distcp.html

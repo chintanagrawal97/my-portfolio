@@ -6,8 +6,6 @@ import { Pagination } from "../components/Pagination"
 import Layout from "../components/Layout"
 
 
-import {Card,Button} from "react-bootstrap"
-
 const allPosts = ({ pageContext, data }) => {
   const { currentPage, numPages } = pageContext
   const isFirst = currentPage === 1

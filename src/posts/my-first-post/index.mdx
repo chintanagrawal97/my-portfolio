@@ -1,59 +1,77 @@
 ---
 md_id : blog
-title: My First Post! Hello World!
+title: How to smartly provison resources for Spark Job
 slug: my-first-post
 date: 2020-03-21
 featureImage: nature.jpg
 excerpt: Habitant pharetra, urna ipsum interdum risus nunc. Venenatis orci, sagittis, elementum urna.
 ---
 
-# Heading 1
+There is no magic solution to provisioning of resources. However these are the general guidelines that can help you to improve the performance of your spark jobs. But do test them out in development environment before psuhing it to prod.
 
-## Heading 2
+Calculate and set the following Spark configuration parameters carefully for the Spark application to run successfully:
 
-### Heading 3
+spark.executor.memory – Size of memory to use for each executor that runs the task.
+spark.executor.cores – Number of virtual cores.
+spark.driver.memory – Size of memory to use for the driver.
+spark.driver.cores – Number of virtual cores to use for the driver.
 
-#### Heading 4
+The number of executor cores will decide the number of parralel task . Each task will execute per partition basis. Based on historical data, it is recommended to have five virtual cores for each executor to achieve optimal results in any sized cluster.
 
-##### Heading 5
+In order to estimate the number of partitions you can use the below guide for your reference. 
 
-###### Heading 6
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. `Consectetur pulvinar consequat hendrerit nulla et tempor neque`, risus. Mauris nulla at imperdiet duis sit euismod quis augue. Quam convallis porta pharetra consequat diam laoreet enim.
+                               | DataSource (S3) |
+                               +-------+---------+
+                                       |
+                                       |
+                   +-------------------v--------------------------------+
+                   |        File: Splittable or Unsplittable?           |
+                   +-------------------+------------------------+-------+
+               splittable              |                        |
+                 +---------------------+                        |
+    +------------v------+                                       |Unsplittable
+    |  Each file size   |                                       |
+    +-------+--------+--+    file-size > 64MB                   v
+            |        +------------------------+   Input Partition = The num of files
+            |                                 |
+            |file-size < 64MB                 |
+            |                                 v
+            |                     Input Partition = (ALL file-size)/64MB
+            v
+ Input Partition = The num of files
 
----
 
-Lorem ipsum dolor sit amet, ~~consectetur adipiscing elit~~. Ut tortor tincidunt porttitor suspendisse dolor aliquam, sodales. Consequat, amet, et urna, habitant nibh tincidunt viverra sed sed. **Amet tortor euismod ut in nulla viverra in**. Proin gravida.
+ MaxNeededExecutors = (InputPartition)/(TheNumOfTasks per Executor) = 428/5 = 86
 
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit nisl, leo et. Vitae hendrerit vivamus cum ullamcorper hendrerit et arcu, elit ornare.
 
-[Lorem ipsum dolor sit amet](https://www.google.com/), consectetur adipiscing elit. Integer morbi purus in morbi nisl lobortis congue malesuada. Id turpis posuere nam habitasse at mus viverra. Est at pretium facilisis cursus leo. Et massa tincidunt velit donec. Erat elementum nibh.
+Number of executors per instance = (total number of virtual cores per instance - 1)/ spark.executors.cores
 
-1. Showcase and embed your work with
-2. Showcase and embed your work with
-3. Showcase and embed your work with
+Here we have subtracted one virtual core from the total number of virtual cores to reserve it for the Hadoop daemons.
 
-- Showcase and embed your work with
-- Showcase and embed your work with
-- Showcase and embed your work with
+![Spark Image](spark_memory_model.png)
 
-![Nature Photo](nature.jpg)
+Let us analyse the JVM heap of Spark Executor. We need to reserve 1 Gb memory and 1 core for YARN and Hadoop daemons. 
+Executor overhead max memory is calculated as 
+      max(284,0.1 * Executor memory )
 
-```html
-<div>Hello World</div>
-```
+Now coming to JVM heap 
+- 300 Mb memory is reserved.
+- spark.memory.fraction - It is the fraction of heap space which is used for execution and storage. By default its value is set to 0.75 rest is the user memory.
+- User Memory - It's mainly used to store the data needed for RDD conversion operations, such as the information for RDD dependency.
 
-```css
-.imperio {
-  color: blue;
-}
-```
+Now each executor is suited to run 5 parallel tasks. Execution memory required for 5 task would be around 64*5 ~= 350 MB.
+Spark memory = 700 MB 
+User memory = 240Mb 
+Total Spark Memory = 1240 Mb 
+Total Exector Memory = 1240 + 284 = 1524 MB
 
-```js
-const harry = spell(`lumos`)
-```
+For m4.xlarge instance yarn allocates 12288 memory. 
 
-| Syntax    | Description | Type         | Style  | Another Column      |
-| --------- | ----------- | ------------ | ------ | ------------------- |
-| Header    | Title       | HTML Element | Simple | More Boring Info    |
-| Paragraph | Text        | HTML Element | Simple | And Some More Stuff |
+Also many blogs and even satckoverflow mentions that you need 1:1 mapping between the number of executor cores and instance vcpu. But in my experience it is not the case. Even in the 2015 Spark Databricks conferenece Sammer Farooqui mentioned thiss too be a common misconception amongst the spark community and insisted on oversubscribing of resources. 
+
+m4.xlarge instancce has 4 VPC and 16 Gb RAM. Now we will set aside 1 VCPU and 1 GB of RAM for the Haadoop daemons.
+Yarn allocates a container of size 12288 MB.
+You can easily run 2 exceutor with 5.5 GB RAM  and 5 executor coress each. These executor cores are running inside the JVM and it is  upto the OS scheduler and JVM to communicate for CPU resources.
+
+   
