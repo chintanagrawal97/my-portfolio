@@ -1,6 +1,6 @@
 import React from "react"
 import { graphql } from "gatsby"
-
+import { Link } from "gatsby"
 import { ContentCard } from "../components/ContentCard"
 import { Pagination } from "../components/Pagination"
 import Layout from "../components/Layout"

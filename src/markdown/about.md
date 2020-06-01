@@ -4,8 +4,19 @@ id: "about-me"
 
 Hey there!
 
-I'm Chintan Agrawal. This website was made to showcase all of what I can do and plan to do. Don't judge my writing based on this section though, this is by far my shoddiest work yet.
 
+I'm Chintan Agrawal. This website was made to showcase all of what I can do and plan to do. Don't judge my writing based on this section though, this is by far my shoddiest work yet.
+```python
+import os
+import gzip
+for file in os.listdir(r"C:\Directory_name"):
+    if file.endswith(".gz"):
+        print file
+        os.chdir(r"C:\Directory_name")
+        f = gzip.open(file, 'rb')
+        file_content = f.read()
+        f.close()
+```
 I got into development because computers have always fascinated me. `int i = 10;` creates an integer of value 10? _LIKE, WOW!_ But seriously, just seeing code getting converted to things we use regularly, like Facebook or Amazon, was no less than magic to me and that's where my quest to invent began.
 
 I'm a Cloud Solution Engineer with Amazon Web Services. My expertise are in Big Data (Spark , Hive , Hadoop ) and I enjoy working on web development projects in my spare time with more focus on backend stuff.

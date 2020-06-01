@@ -2,6 +2,8 @@ import React from "react"
 import { CardWrapper} from "../elements"
 import {Card , Button} from "react-bootstrap"
 
+import {Link} from "gatsby"
+
 export const ContentCard = ({ date, title, excerpt, slug }) => {
   return (
     <div>
@@ -22,7 +24,9 @@ export const ContentCard = ({ date, title, excerpt, slug }) => {
             </p>
           </Card.Text>
 
-          <Button variant="primary" href={`${slug}`}>Go somewhere</Button>
+        <Link to={`/blog/${slug}`}>  <Button variant="primary">Go somewhere</Button></Link>
+    
+                            
         
         </Card.Body>
 

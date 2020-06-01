@@ -1,18 +1,18 @@
 import React from "react"
 import { graphql } from "gatsby"
-import { MDXRenderer } from "gatsby-plugin-mdx"
-import {Post } from "../components/Post"
+// import { MDXRenderer } from "gatsby-plugin-mdx"
+import Layout from "../components/Layout"
+import MDXContent from "../components/MDXContent"
+import "./language-tabs.css"
 
 const singlePost = ({ data }) => {
 
-  const seoImage = data.mdx.frontmatter.featureImage.publicURL
-
   return (
         <div>
-            <Post>
+            <Layout>
               <h1 margin="0 0 2rem 0">{data.mdx.frontmatter.title}</h1>
-              <MDXRenderer>{data.mdx.body}</MDXRenderer>
-            </Post>
+              <MDXContent>{data.mdx.body}</MDXContent>
+            </Layout>
         </div>
           
           
@@ -31,14 +31,6 @@ export const pageQuery = graphql`
         excerpt
         slug
         title
-        featureImage {
-          publicURL
-          childImageSharp {
-            fixed {
-              ...GatsbyImageSharpFixed
-            }
-          }
-        }
       }
     }
   }

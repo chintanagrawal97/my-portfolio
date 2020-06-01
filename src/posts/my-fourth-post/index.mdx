@@ -48,6 +48,7 @@ Half 2BAB: file83, file84, ….., file88 <-- Succeeds
 
 Also, you can consider to write a script that will list and then read the objects in your bucket one by one and return the list of corrupted filesconsider below python code snippet as an example.
 
+
 ```python
 import os
 import gzip
@@ -58,25 +59,23 @@ for file in os.listdir(r"C:\Directory_name"):
         f = gzip.open(file, 'rb')
         file_content = f.read()
         f.close()
-``` 
-
-
+```        
 Athena throws the "HIVE_CURSOR_ERROR" error for files having 0 bytes in size (basically corrupt) or a file with corrupt data.Athena query would stop executing if it detects a problem with the source data. 
  
 AWS s3api and delete-object CLI commands on best effort basis. You can consider the below example for listing and deleting objects having 0B size :
 
-```{r, engine='bash', count_lines}
+```bash
 bucket_name='rcs-maap-cdr-prod'
 prefix_name = ‘kt'
 ```
 
-```{r, engine='bash', count_lines}
+```bash
 aws s3api list-objects —bucket $bucket_name  --prefix $prefix_name --query 'Contents[?Size==`0`][Key]' --output text | xargs -I {} aws s3api delete-object --bucket $bucket_name --key {}
 ```
 
 The above mentioned commands list and delete all objects having size=0 bytes under the bucket 'rcs-maap-cdr-prod' and folder 'kt'. If you wish to delete all objects having size 0 under a particular bucket, you can run the following command :
 
-```{r, engine='bash', count_lines}
+```bash
 aws s3api list-objects --bucket $bucket_name --query 'Contents[?Size==`0`][Key]' --output text | xargs -I {} aws s3api delete-object --bucket $bucket_name --key {}
 ```
 ----------------------------------------

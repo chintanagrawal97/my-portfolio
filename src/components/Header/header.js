@@ -24,7 +24,7 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link className={headerStyles.navItem} activeClassName={headerStyles.activeNavItem} to="/blog">
+            <Link className={headerStyles.navItem} activeClassName={headerStyles.activeNavItem} to="/blog/0">
               Blog
             </Link>
           </li>
