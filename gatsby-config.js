@@ -5,10 +5,15 @@
  */
 module.exports = {
   siteMetadata: {
-		title: `Raptori`,
-		description: `Joe McGrath - Portfolio`,
-		author: `@thisRaptori`,
-		url: `https://raptori.dev`,
+		title: `Chintan Agrawal`,
+		description: `I mainly write about big data technnologies`,
+		author: {
+      name: `Jibin Thomas`,
+    },
+    siteUrl: `http://localhost:8000/`,
+    social: {
+      twitter: '@real_jibin',
+    }
 	},
   plugins: [
     'gatsby-plugin-root-import',
@@ -51,6 +56,19 @@ module.exports = {
         gatsbyRemarkPlugins: [ `gatsby-remark-images` ],
         plugins: [ `gatsby-remark-images` ],
         extensions: [`.mdx`],
+      },
+    },
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `Chintan Agrawal`,
+        short_name: `Chintan Agrawal`,
+        start_url: `/`,
+        background_color: `#F1F1F1`,
+        theme_color: `#F1F1F1`,
+        display: `standalone`,
+        icon: `src/images/favicon.png`, // This path is relative to the root of the site.
+        include_favicon: true,
       },
     }
   ]
