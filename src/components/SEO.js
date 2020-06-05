@@ -7,7 +7,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import Helmet from 'react-helmet'
+import {Helmet} from 'react-helmet'
 import { useStaticQuery, graphql } from 'gatsby'
 
 function SEO({ description, lang, keywords, title, type, imagePath, slug }) {
@@ -44,7 +44,7 @@ function SEO({ description, lang, keywords, title, type, imagePath, slug }) {
   const metaTwitterAuthor = site.siteMetadata.social.twitter
   const metaImagePath = imagePath || allFile.edges[0].node.publicURL
   const metaUrl = slug && siteUrl + slug
-
+  console.log(metaUrl)
   return (
     <Helmet
       htmlAttributes={{
