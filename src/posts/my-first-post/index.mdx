@@ -20,10 +20,9 @@ The number of executor cores will decide the number of parralel task . Each task
 
 In order to estimate the number of partitions you can use the below guide for your reference. 
 
-
-                               | DataSource (S3) |
-                               +-------+---------+
-                                       |
+```               
+                                     //Source
+                                       S3
                                        |
                    +-------------------v--------------------------------+
                    |        File: Splittable or Unsplittable?           |
@@ -40,7 +39,7 @@ In order to estimate the number of partitions you can use the below guide for yo
             |                     Input Partition = (ALL file-size)/64MB
             v
  Input Partition = The num of files
-
+```
 
  MaxNeededExecutors = (InputPartition)/(TheNumOfTasks per Executor) = 428/5 = 86
 
@@ -49,7 +48,7 @@ Number of executors per instance = (total number of virtual cores per instance -
 
 Here we have subtracted one virtual core from the total number of virtual cores to reserve it for the Hadoop daemons.
 
-![Spark Image](spark_memory_model.png)
+![Spark Image](./spark_memory_model.png)
 
 Let us analyse the JVM heap of Spark Executor. We need to reserve 1 Gb memory and 1 core for YARN and Hadoop daemons. 
 Executor overhead max memory is calculated as 
