@@ -1,9 +1,6 @@
 import React from 'react'
 import Layout from '../components/Layout'
-import Link from '../components/Link' 
-import Icon from '../components/Icon'
 import Resume from '../components/Resume'
-import { github } from '../components/Link'
 
 const ResumePage = () => (
 	<Layout activePage="resume">
@@ -15,15 +12,7 @@ const ResumePage = () => (
 					2009. For more details, download my resume as a PDF, or
 					check out some of my code on GitHub!
 				</p>
-				<p>
-					{/* <Link to="/joe-mcgrath-resume.pdf" external button>
-						Download Resume
-					</Link> */}
-					&nbsp;
-					{/* <Link to={github} secondary button>
-						<Icon name="GitHub" /> Visit GitHub
-					</Link> */}
-				</p>
+				
 			
 			<Resume.Position
 				name="Amazon Web Services"

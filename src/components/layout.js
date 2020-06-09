@@ -12,18 +12,15 @@ const Layout = ({ children }) => (
           __html: `{
           "@context": "https://schema.org",
           "@type": "Person",
-          "name": "Chintan Thomas",
-          "email": "jibin.thomas2706@gmail.com",
+          "name": "Chintan Agrawal",
+          "email": "chintanagrawal2174@gmail.com",
           "image": "https://drive.google.com/uc?id=1DWBWax_DJCH-oetqBRxYzWGul2ZDcTak",
           "url": "http://jibin.tech",
-          "jobTitle": "Front End Developer",
+          "jobTitle": "Big Data Engineer",
           "gender": "http://schema.org/Male",
           "sameAs": [
-            "https://github.com/jibin2706",
-            "https://www.linkedin.com/in/jibin2706/",
-            "http://instagram.com/jibin2706",
-            "https://twitter.com/real_jibin",
-            "https://blog.jibin.tech/rss.xml"
+            "https://github.com/chintanagrawal97/",
+            "https://www.linkedin.com/in/chintan-agrawal-87a866135/",     
           ]
         }`,
         }}
