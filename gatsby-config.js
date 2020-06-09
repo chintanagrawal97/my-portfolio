@@ -44,12 +44,10 @@ module.exports = {
         path: `${__dirname}/src/markdown`,
       }
     },
+  
     {
       resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `posts`,
-        path: `${__dirname}/src/posts`,
-      }
+      options: { name: `blog`, path: `${__dirname}/content/blog` },
     },
     {
       resolve: `gatsby-plugin-mdx`,

@@ -1,0 +1,142 @@
+@import '../styles/colors';
+
+.blog-list {
+  animation: translate-up 1s cubic-bezier(0.39, 0.575, 0.565, 1);
+  max-width: 1100px;
+  margin: auto;
+}
+
+.main__list__header {
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+  margin: 0 0 2rem;
+  text-align: center;
+
+  span {
+    display: block;
+    letter-spacing: 0px;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-top: 0.25rem;
+  }
+}
+
+.blog__list {
+  border-radius: 6px;
+  display: block;
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+  transition: background-color 200ms cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+.blog__list__title {
+  display: inline-block;
+  font-size: 1.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 0.25rem;
+}
+
+.blog__list__meta {
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.blog__list__info {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+// light mode
+body.light-mode {
+  .main__list__header {
+    color: $grey-800;
+  }
+
+  .blog__list:focus,
+  .blog__list:active,
+  .blog__list:hover {
+    outline: none;
+
+    .blog__list__title {
+      color: $primary-darker;
+    }
+  }
+
+  .blog__list {
+    background: $white;
+  }
+
+  .blog__list__meta {
+    color: $grey-700;
+  }
+
+  .blog__list__info {
+    color: $grey-800;
+  }
+}
+
+// dark mode
+body.dark-mode {
+  .main__list__header {
+    color: $light-grey;
+  }
+
+  .blog__list {
+    background: #2a2a2a;
+  }
+
+  .blog__list:focus,
+  .blog__list:active,
+  .blog__list:hover {
+    outline: none;
+
+    .blog__list__title {
+      color: $primary-lighter;
+    }
+  }
+
+  .blog__list__meta {
+    color: $light-grey;
+  }
+
+  .blog__list__info {
+    color: $light-grey;
+  }
+}
+
+// media queries
+@media (min-width: 550px) {
+  .main__list__header {
+    font-size: 1.5rem;
+
+    span {
+      font-size: 1.15rem;
+      text-align: center;
+    }
+  }
+
+  .blog__list__title {
+    font-size: 1.15rem;
+  }
+
+  .blog__list__info {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 771px) {
+  .main__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+    gap: 1rem;
+  }
+
+  .blog__list {
+    height: 100%;
+    padding: 1.5rem;
+  }
+}
