@@ -22,6 +22,7 @@ module.exports = {
     `gatsby-plugin-sharp`,
     `gatsby-transformer-remark`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-offline`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -69,6 +70,7 @@ module.exports = {
         icon: `src/images/favicon.png`, // This path is relative to the root of the site.
         include_favicon: true,
       },
+      
     }
   ]
 }
