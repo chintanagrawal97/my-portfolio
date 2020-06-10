@@ -1,9 +1,14 @@
 import React from 'react'
 import Layout from '../components/Layout'
 import Resume from '../components/Resume'
+import './portfolio.scss'
 
 const ResumePage = () => (
+  
+    
+   
 	<Layout activePage="resume">
+          <main className="portfolio">
 		<Resume>
 			
 				<p>
@@ -97,7 +102,9 @@ const ResumePage = () => (
 				/>
 			</Resume.Position>
 		</Resume>
+        </main>
 	</Layout>
+     
 )
 
 export default ResumePage
