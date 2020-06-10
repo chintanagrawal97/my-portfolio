@@ -1,5 +1,5 @@
 import React from 'react'
-import Layout from '../components/Layout'
+import Layout from '../components/layout'
 import Resume from '../components/Resume'
 import './portfolio.scss'
 
