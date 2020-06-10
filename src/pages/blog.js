@@ -3,12 +3,11 @@ import { graphql } from 'gatsby'
 import SEO from '../components/SEO'
 import Layout from '../components/layout'
 import BlogList from '../templates/blogList'
-
 const IndexPage = ({ data }) => (
   <Layout>
     <SEO
-      title="Blog Posts by Jibin Thomas"
-      description="I write about programming which includes topics from JavaScript, CSS, IoT and more. "
+      title="Blog Posts by Chintan Agrawal"
+      description="I write about Big Data. "
     />
     <BlogList data={data} templateTitle="Articles" />
   </Layout>

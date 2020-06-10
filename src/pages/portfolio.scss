@@ -2,7 +2,7 @@
 
 .portfolio {
   animation: translate-up 1s cubic-bezier(0.39, 0.575, 0.565, 1);
-  padding: 0 0.5rem;
+  padding: 0 0.0rem;
   max-width: 800px;
   margin: auto;
 }
@@ -10,7 +10,7 @@
 .portfolio__header {
   font-size: 1.25rem;
   font-weight: 700;
-  margin: 4rem 0 0;
+  margin: 2rem 0 0;
   text-transform: capitalize;
   text-align: center;
 }
@@ -23,7 +23,7 @@
 }
 
 .portfolio__section {
-  margin-top: 5rem;
+  margin-top: 0rem;
 }
 
 .hero__social {

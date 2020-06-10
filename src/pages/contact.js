@@ -7,8 +7,8 @@ import '../styles/contact.scss'
 const Contact = () => (
   <Layout>
     <SEO
-      title="Contact Jibin Thomas - Front-End Web Developer"
-      description="He is available for freelancing contract work. You can reach out to him at jibin.thomas2706@gmail.com"
+      title="Contact Chintan Agrawal - Big Data Engineer"
+      description="You can reach out to him at chintanagrawal2174@gmail.com"
     />
 
     <main className="contact">
